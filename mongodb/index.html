@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>MongoDB - 数据库教程</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "MongoDB";
+    var mkdocs_page_input_path = "mongodb.md";
+    var mkdocs_page_url = "/mongodb/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> 数据库教程</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">首页</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">MongoDB</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#centosmongodb">CentOS安装MongoDB</a></li>
+                
+                    <li><a class="toctree-l4" href="#_1">环境</a></li>
+                
+                    <li><a class="toctree-l4" href="#_2">安装</a></li>
+                
+                    <li><a class="toctree-l4" href="#_5">启动</a></li>
+                
+                    <li><a class="toctree-l4" href="#_10">测试</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#_11">注意</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#dockermongodb">docker安装MongoDB</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../mysql/">MySQL</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">数据库教程</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>MongoDB</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="centosmongodb">CentOS安装MongoDB</h1>
+<h2 id="_1">环境</h2>
+<blockquote>
+<ul>
+<li>centos7</li>
+<li>mongodb3.2.0</li>
+</ul>
+</blockquote>
+<h2 id="_2">安装</h2>
+<pre><code>cd /opt/local
+wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.2.0.tgz
+tar -xvf mongodb-linux-x86_64-3.2.0.tgz
+mv mongodb-linux-x86_64-3.2.0 mongodb
+</code></pre>
+<h3 id="_3">配置环境变量</h3>
+<hr />
+<pre><code>修改/etc/profile, 添加如下内容
+vi /etc/profile
+
+export MONGODB_HOME=/opt/local/mongodb
+export PATH=$MONGODB_HOME/bin:$PATH
+
+source /etc/profile
+</code></pre>
+<h3 id="_4">查看是否安装成功</h3>
+<hr />
+<pre><code>mongod -v
+</code></pre>
+<h2 id="_5">启动</h2>
+<h3 id="_6">创建数据库目录</h3>
+<pre><code>mkdir -p /data/mongodb
+mkdir -p /data/mongodb/logs
+touch /data/mongodb/logs/mongodb.log
+</code></pre>
+<h3 id="_7">添加配置文件</h3>
+<pre><code>新建mongodb.conf配置文件, 通过这个配置文件进行启动.
+vi /etc/mongo/mongodb.conf
+</code></pre>
+<ol>
+<li>
+<p>配置文件参数说明:    </p>
+<pre><code>mongodb的参数说明：   
+--dbpath 数据库路径(数据文件)
+--logpath 日志文件路径
+--master 指定为主机器
+--slave 指定为从机器
+--source 指定主机器的IP地址
+-pologSize 指定日志文件大小不超过64M.因为resync是非常操作量大且耗时，最好通过设置一个足够大的oplogSize来避免resync(默认的 oplog大小是空闲磁盘大小的5%)。
+--logappend 日志文件末尾添加
+--port 启用端口号
+--fork 在后台运行
+--only 指定只复制哪一个数据库
+--slavedelay 指从复制检测的时间间隔
+--auth 是否需要验证权限登录(用户名和密码)
+</code></pre>
+<p>注：mongodb配置文件里面的参数很多，定制特定的需求，请参考官方文档
+2. 配置文件内容:</p>
+<pre><code>dbpath=/data/mongodb
+logpath=/data/mongodb/log/mongodb.log
+logappend=true
+port=27017
+fork=true
+##auth = true # 先关闭, 创建好用户在启动
+</code></pre>
+<ol>
+<li>
+<p>通过配置文件启动:</p>
+<p>mongod -f /etc/mongo/mongodb.conf</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="_8">详细权限配置</h3>
+<p><a href="http://www.cnblogs.com/zhoujinyi/p/4610050.html">MongoDB 3.0 用户创建</a></p>
+<h3 id="_9">配置防火墙</h3>
+<pre><code>//添加端口
+firewall-cmd --zone=public --add-port=27017/tcp --permanent
+//重启防火墙
+service firewalld restart
+</code></pre>
+<h2 id="_10">测试</h2>
+<pre><code>使用客户端robomongo创建连接测试
+</code></pre>
+<h1 id="_11">注意</h1>
+<p>我们创建了用户, 这个时候要开启权限启动, 在配置文件中添加auth=true, 然后重启一下</p>
+<h1 id="dockermongodb">docker安装MongoDB</h1>
+<pre><code>docker run -v /data/db:/data/db -p 27017:27017 --name mongodb -d mongo:3.2.0  mongod --smallfiles
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../mysql/" class="btn btn-neutral float-right" title="MySQL">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="首页"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../mysql/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
