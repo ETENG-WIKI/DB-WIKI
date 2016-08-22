@@ -1,0 +1,6 @@
+site_name: 数据库教程
+pages:
+- 首页: index.md
+- MongoDB: mongodb.md
+- MySQL: mysql.md
+theme: readthedocs
